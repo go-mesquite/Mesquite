@@ -6,7 +6,8 @@ Traditional web development is overly complicated for the majority of projects. 
 ## Technologies
 - Support for HTMX to make responsive user experiences
 - SQLite database for speed an simplicity (Yes, this is a good idea in most cases. More info below)
-- Written in Go for speed and readability
+- HTTP/2 to send all of the files neded for a page at once
+- Written in Go for speed and ecosystem
 
 Everything is modular so you can use a different database/router/frontend if your needs change
 
@@ -27,6 +28,7 @@ Mesquite sits in the middle of these two frameworks in terms of supporting use c
 - [ ] Statfiles
 - [ ] Config for running in dev, prod ect.
 - [ ] Hot reload
+- [ ] HTTP/2 Send multiple assets to the client during the first request? Can we get this when compiling the templates?
 - [ ] SQL database wrapper (without cgo)
 - [ ] User input (Forms/CSRF)
 - [ ] Authentication
