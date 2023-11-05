@@ -1,13 +1,13 @@
 package main
 
 import (
-    "fmt"
+	"fmt"
 
-    "github.com/go-mesquite/Mesquite"
+	mesquite "github.com/go-mesquite/Mesquite"
 )
 
 func main() {
-    // Run a function from the other file
-    message := mesquite.Hello("Partner")
-    fmt.Println(message)
+	// Run a function from the other file
+	message := mesquite.Hello("Partner")
+	fmt.Println(message)
 }

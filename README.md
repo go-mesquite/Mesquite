@@ -1,5 +1,5 @@
 # Mesquite
-A simple full stack web framework in Go
+A full stack web framework in Go built for rapidly prototyping majestic monoliths
 
 Traditional web development is overly complicated for the majority of projects. This framework offers a robust way to quickly build websites with modern ideas.
 
@@ -32,7 +32,8 @@ Mesquite sits in the middle of these two frameworks in terms of supporting use c
 - [ ] SQL database wrapper (without cgo)
 - [ ] User input (Forms/CSRF)
 - [ ] Authentication
-- [ ] Lightsail-like SQLite backup and restore
+- [ ] Create a tutorial like the flask mega tutorial. Build a basic family social media site? (Something a lot of people could make use of)
+- [ ] Litesail-like SQLite backup and restore
 - [ ] Database migrations? (Like Django or flask-migrate?)
 - [ ] Tailwind? (without NPM)
 - [ ] API? (Make an official way to build REST APIs?)
