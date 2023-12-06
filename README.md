@@ -1,10 +1,13 @@
 # Mesquite
-A full stack web framework in Go built for rapidly prototyping majestic monoliths
+A full stack web framework in Go built for rapidly prototyping HTMX monoliths
 
-Traditional web development is overly complicated for the majority of projects. This framework offers a robust way to quickly build websites with modern ideas.
+Traditional web development is overly complicated for the majority of projects. This framework offers a robust way to quickly build reliable websites.
+
+> [!WARNING]  
+> This framework is under heavy development and is not ready for production
 
 ## Technologies
-- Support for HTMX to make responsive user experiences
+- Built for HTMX
 - SQLite database for speed an simplicity (Yes, this is a good idea in most cases. More info below)
 - HTTP/2 to send all of the files needed for a page at once
 - Written in Go for speed and ecosystem
