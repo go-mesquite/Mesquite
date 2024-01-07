@@ -8,7 +8,7 @@ Traditional web development is overly complicated for the majority of projects. 
 
 ## Technologies
 - Built for HTMX
-- SQLite database for speed an simplicity (Yes, this is a good idea in most cases. More info below)
+- A local database that natively supports Go data types
 - HTTP/2 to send all of the files needed for a page at once
 - Written in Go for speed and ecosystem
 
