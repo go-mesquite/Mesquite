@@ -48,4 +48,4 @@ Ideas:
 
 ---
 
-Slow is smooth, smooth is fast
+Inspired in by: https://paulgraham.com/avg.html
