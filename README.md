@@ -14,27 +14,36 @@ Traditional web development is overly complicated for the majority of projects. 
 
 Everything is modular so you can use a different database/router/frontend if your needs change
 
-## Why use Mesquite over the standard library?
+Mesquite is built with the architecture of MVCS: model view controller service [The Model View Controller Pattern – MVC Architecture and Frameworks Explained](https://www.freecodecamp.org/news/the-model-view-controller-pattern-mvc-architecture-and-frameworks-explained/)
+
+### Why use Mesquite over the standard library?
 The standard library in Go is awesome. But you still end up writing a lot of boilerplate code to do common actions like routing, serving templates and logging. The intent of Mesquite is to make a simple, beginner friendly, fullstack framework that is fast to build with. Similar to Django and Ruby on Rails.
 
-## Should we really be using SQLite in production?
+### Should we really be using SQLite in production?
 There is a growing movement towards using SQLite for production websites. A great primer for this is Ben Johnson's [I'm All-In on Server-Side SQLite](https://fly.io/blog/all-in-on-sqlite-litestream/).
 Lately, some higher profile companies like [Tailscale](https://tailscale.com/blog/database-for-2022/) and [EpicWeb.dev](https://kentcdodds.com/blog/i-migrated-from-a-postgres-cluster-to-distributed-sqlite-with-litefs) are using SQLite in production.
 
-## How does this differ from Django and Flask?
+### How does this differ from Django and Flask?
 Mesquite sits in the middle of these two frameworks in terms of supporting use cases. Ideally, Mesquite will have common use cases within the same framework and documentation to support it. But unlike Django, you can write your own code to replace pieces of Mesquite. Additionally, Mesquite follows the architecture philosophy of Flask where the user writes everything as they need it (as opposed to auto-generating code).
 
+## Design decisions
+### Routing
+This builds on the Go standard library's net/http router.
+- Route with predictable nature and handle errors (See https://pkg.go.dev/net/http@master#example-ServeMux.Handle)
+- Have common utilities for things like defining static file directories
+- Have the ability to more easily change the router if more features are desired in the future
 
 ## Roadmap
-- [ ] Routing
-- [ ] Tempting
+- [x] Routing
+- [ ] Templates (Or should I call them views?)
 - [ ] Static files
 - [ ] Config for running in dev, prod ect.
-- [ ] Hot reload (Including HTML edits?)
-- [ ] HTTP/2 Send multiple assets to the client during the first request? Can we get this when compiling the templates?
+- [ ] Reload on save
+- [ ] Add a reverse lookup like Flask's url_for()
 - [ ] SQL database wrapper (without cgo)
 - [ ] User input (Forms/CSRF)
 - [ ] Authentication
+- [ ] Add the functionality for multiple routers and reverse lookups. Like Flask's url_for()
 - [ ] Create a tutorial like the flask mega tutorial. Build a basic family social media site? (Something a lot of people could make use of) Or polls app
 - [ ] Lite sail-like SQLite backup and restore
 - [ ] Database migrations? (Like Django or flask-migrate?)

@@ -50,26 +50,31 @@ func Ok(w http.ResponseWriter, r *http.Request) {
 		return &Logger{handlerToWrap}
 	}
 */
+
 func main() {
 	// Run a function from the other file
 	message := mesquite.Hello("Partner")
 	fmt.Println(message)
 
 	// Go Mesquite!
+	// How should a website be laid out? https://go.dev/doc/modules/layout
 	site := mesquite.NewSite()
 	router := mesquite.NewRouter(site)
 
 	// TODO make my own router. The standard lib one is annoying
-	// Have Routes, Methods, and Names. Could it be as easy as having a hash table for each of them?
+	// Have Routes, Methods, and Names. Could it be as easy as having a hash table for each of them? No, you want URL vars right?
 
-	router.GET("/ok", Ok)
 	router.GET("/", Root)
+	router.GET("/ok", Ok)
+	//router.GET("/{id:int}", Root)
+	//router.POST("/{name:string}", Root2)
+	//router.POST("/{name}/{name2}", Name)
 
 	// Add later
 	//router.UseMiddleware(Func)
 	//router.Static("static". "static")
 	//router.Templates("templates")
-	//router.404(Handle404)
+	//router.ControllerFor404(Handle404)
 
-	router.Serve()
+	router.Serve("localhost:8000")
 }
