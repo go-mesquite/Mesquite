@@ -51,10 +51,20 @@ This builds on the Go standard library's net/http router.
 
 
 Ideas:
-- Build step for tailwind or something similar (So NPM is not needed)
 - Server side analytics and something like Django admin?
 - Use ko.build? It looks neat
 
 ---
 
 Inspired in by: https://paulgraham.com/avg.html
+
+---
+
+### Notes for Jackson since this is still very rough
+Embrace DDD with the model layer?:
+- Each Model has it's own file in /models. These are used as objects with Structs and have getters and setters.
+- Each object/struct is part of the domain. They may correspond to one or more database tables.
+- This eliminates the need for a service/utility layer that is hard to enforce other developers to use
+- How should we deal with actions that could be optimized? Advocating for a bulk create instead of running a single create SQL statement over and over? (From the controller perspective)
+- Conventional wisdom says that business logic should not be in the database layer. But I think it makes sense in this case
+- Or use MVCD. Add a domain layer instead of a service layer. Models would just be CREATE TABLEs and migrations
