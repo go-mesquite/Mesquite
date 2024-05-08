@@ -1,15 +1,5 @@
 package mesquite
 
-import (
-	"fmt"
-)
-
-func Hello(name string) string {
-	// An example of running a function
-	message := fmt.Sprintf("Howdy, %v...", name)
-	return message
-}
-
 /*
 NOTE: Go templates do not support HTMX. Make your own template engine?
 Base it off of Jinja2 to attract Django/Flask developers?

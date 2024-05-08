@@ -28,10 +28,9 @@ Mesquite sits in the middle of these two frameworks in terms of supporting use c
 
 ## Design decisions
 ### Routing
-This builds on the Go standard library's net/http router.
-- Route with predictable nature and handle errors (See https://pkg.go.dev/net/http@master#example-ServeMux.Handle)
-- Have common utilities for things like defining static file directories
-- Have the ability to more easily change the router if more features are desired in the future
+Mesquite has it's own basic router to reduce dependencies.
+It is compatible with standard `net.http` so it can be swapped for others like `gorilla/mux`
+
 
 ## Roadmap
 - [x] Routing
@@ -39,20 +38,11 @@ This builds on the Go standard library's net/http router.
 - [ ] Static files
 - [ ] Config for running in dev, prod ect.
 - [ ] Reload on save
-- [ ] Add a reverse lookup like Flask's url_for()
-- [ ] SQL database wrapper (without cgo)
 - [ ] User input (Forms/CSRF)
 - [ ] Authentication
 - [ ] Add the functionality for multiple routers and reverse lookups. Like Flask's url_for()
 - [ ] Create a tutorial like the flask mega tutorial. Build a basic family social media site? (Something a lot of people could make use of) Or polls app
-- [ ] Lite sail-like SQLite backup and restore
-- [ ] Database migrations? (Like Django or flask-migrate?)
 - [ ] Performance profiling/optimization
-
-
-Ideas:
-- Server side analytics and something like Django admin?
-- Use ko.build? It looks neat
 
 ---
 

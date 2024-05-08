@@ -1,18 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
 	mesquite "github.com/go-mesquite/Mesquite"
 )
 
-func Root(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello, root"))
-}
-
-func Ok(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello, ok"))
+func Hello(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Hello " + mesquite.URLParam(r, "Message")))
 }
 
 /*
@@ -52,29 +47,31 @@ func Ok(w http.ResponseWriter, r *http.Request) {
 */
 
 func main() {
-	// Run a function from the other file
-	message := mesquite.Hello("Partner")
-	fmt.Println(message)
+	// Optionally use the Mesquite router
+	router := mesquite.NewRouter()
 
-	// Go Mesquite!
-	// How should a website be laid out? https://go.dev/doc/modules/layout
-	site := mesquite.NewSite()
-	router := mesquite.NewRouter(site)
+	// Create a route/function for one or more pages
+	// There is a lot going on in the next line but it's simple if we break it down
+	// http.MethodGet is the method (like GET, POST, DELETE ect.)
+	// "/" is the URL that this route is attached to. Regex can be used here
+	// func... is just an inline function defining the route. This could be done separately
+	// http.ResponseWriter is the interface for constructing an HTTP response
+	// *http.Request is the pointer to data that represents an HTTP request received by the server
+	router.Route(http.MethodGet, "/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Root root root"))
+	})
 
-	// TODO make my own router. The standard lib one is annoying
-	// Have Routes, Methods, and Names. Could it be as easy as having a hash table for each of them? No, you want URL vars right?
+	// Use a shortcut to reference a function (I can't decide if I like this way)
+	router.GET(`/hello/(?P<Message>\w+)`, Hello)
 
-	router.GET("/", Root)
-	router.GET("/ok", Ok)
-	//router.GET("/{id:int}", Root)
-	//router.POST("/{name:string}", Root2)
-	//router.POST("/{name}/{name2}", Name)
+	// Serve static files from a folder
+	router.Static("staticfiles", "/static")
 
-	// Add later
-	//router.UseMiddleware(Func)
-	//router.Static("static". "static")
+	// TODO Add later
+
+	//router.UseMiddleware(Func) (Figure out naming for different types of middleware needed)
 	//router.Templates("templates")
-	//router.ControllerFor404(Handle404)
+	//router.ControllerFor404(Handle404), 500
 
-	router.Serve("localhost:8000")
+	http.ListenAndServe(":8000", router)
 }

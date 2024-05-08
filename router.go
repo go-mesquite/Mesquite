@@ -1,75 +1,108 @@
 package mesquite
 
 import (
-	"fmt"
+	"context"
+	"log"
 	"net/http"
+	"regexp"
 )
 
-type MesquiteSite struct {
-	// More configuration for the site will go here
-
-	router Router
-	// Later, add the functionality for multiple routers and names (for reverse lookups)
-	// And middleware https://drstearns.github.io/tutorials/gomiddleware/
+type RouteEntry struct {
+	Path        *regexp.Regexp
+	Method      string
+	HandlerFunc http.HandlerFunc
 }
 
-func NewSite() *MesquiteSite {
-	site := &MesquiteSite{}
-	return site
+func (ent *RouteEntry) Match(r *http.Request) map[string]string {
+	match := ent.Path.FindStringSubmatch(r.URL.Path)
+	if match == nil {
+		return nil // No match found
+	}
+
+	// Create a map to store URL parameters in
+	params := make(map[string]string)
+	groupNames := ent.Path.SubexpNames()
+	for i, group := range match {
+		params[groupNames[i]] = group
+	}
+
+	return params
 }
 
 type Router struct {
-	site *MesquiteSite
+	routes []RouteEntry
 }
 
-func NewRouter(site *MesquiteSite) *Router {
-	return &Router{
-		site: site,
+func NewRouter() *Router {
+	return &Router{}
+}
+
+func (rtr *Router) Route(method, path string, handlerFunc http.HandlerFunc) {
+	// NOTE: ^ means start of string and $ means end. Without these,
+	//   we'll still match if the path has content before or after
+	//   the expression (/foo/bar/baz would match the "/bar" route).
+	exactPath := regexp.MustCompile("^" + path + "$")
+
+	e := RouteEntry{
+		Method:      method,
+		Path:        exactPath,
+		HandlerFunc: handlerFunc,
 	}
+	rtr.routes = append(rtr.routes, e)
 }
 
-type Route struct {
-	absolute_path string
-	controller    Controller
+// GET shortcut
+func (router *Router) GET(path string, handlerFunc http.HandlerFunc) {
+	router.Route(http.MethodGet, path, handlerFunc)
 }
 
-// A function that can be registered to a route to handle HTTP requests
-type Controller func(http.ResponseWriter, *http.Request)
-
-func (router *Router) handleFunc(method string, path string, controller Controller) {
-	// HandleFunc is the standard interface for all controllers.
+// POST shortcut
+func (router *Router) POST(path string, handlerFunc http.HandlerFunc) {
+	router.Route(http.MethodPost, path, handlerFunc)
 }
 
-// Serve the site
-func (site *MesquiteSite) Serve(tcpAddr string) {
-	fmt.Println("Serving on:", tcpAddr)
-	http.ListenAndServe(tcpAddr, site.router)
+// PUT shortcut
+func (router *Router) PUT(path string, handlerFunc http.HandlerFunc) {
+	router.Route(http.MethodPut, path, handlerFunc)
 }
 
-// These HTTP method shortcuts these are the only ones HTMX supports
-
-// Add a route and Controller for GET requests
-func (router *Router) GET(path string, handle Controller) {
-	//r.handle(http.MethodGet, path, handle)
-	router.handleFunc("GET", path, handle)
+// DELETE shortcut
+func (router *Router) DELETE(path string, handlerFunc http.HandlerFunc) {
+	router.Route(http.MethodDelete, path, handlerFunc)
 }
 
-// Add a route and Controller for POST requests
-func (router *Router) POST(path string, handle Controller) {
-	router.handleFunc("POST", path, handle)
+// PATCH shortcut
+func (router *Router) PATCH(path string, handlerFunc http.HandlerFunc) {
+	router.Route(http.MethodPatch, path, handlerFunc)
 }
 
-// Add a route and Controller for PUT requests
-func (router *Router) PUT(path string, handle Controller) {
-	router.handleFunc("PUT", path, handle)
+// ServeHTTP is implemented to support the use of http.ListenAndServe()
+func (rtr *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println("ERROR:", r)
+			http.Error(w, "500: Internal Server Error", http.StatusInternalServerError)
+		}
+	}()
+
+	for _, e := range rtr.routes {
+		params := e.Match(r)
+		if params == nil {
+			continue // No match found
+		}
+
+		// Create new request with params stored in context
+		ctx := context.WithValue(r.Context(), "params", params)
+		e.HandlerFunc.ServeHTTP(w, r.WithContext(ctx))
+		return
+	}
+
+	http.NotFound(w, r)
 }
 
-// Add a route and Controller for DELETE requests
-func (router *Router) DELETE(path string, handle Controller) {
-	router.handleFunc("DELETE", path, handle)
-}
-
-// Add a route and Controller for PATCH requests
-func (router *Router) PATCH(path string, handle Controller) {
-	router.handleFunc("PATCH", path, handle)
+// Get the URL variable
+func URLParam(r *http.Request, name string) string {
+	ctx := r.Context()
+	params := ctx.Value("params").(map[string]string)
+	return params[name]
 }
