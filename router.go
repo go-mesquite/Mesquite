@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strings"
 )
 
 type RouteEntry struct {
@@ -105,4 +106,27 @@ func URLParam(r *http.Request, name string) string {
 	ctx := r.Context()
 	params := ctx.Value("params").(map[string]string)
 	return params[name]
+}
+
+// TODO get this working
+
+// Serves static files from the specified directory.
+func (rtr *Router) Static(dir string, prefix string) {
+	// Create a handler function to serve static files
+	handler := http.StripPrefix(prefix, http.FileServer(http.Dir(dir)))
+
+	// Register the handler with the router
+	rtr.Route(http.MethodGet, prefix+"/*filepath", func(w http.ResponseWriter, r *http.Request) {
+		// Extract the requested file path
+		filePath := URLParam(r, "filepath")
+
+		// Validate the requested file path to prevent directory traversal
+		if !strings.HasPrefix(filePath, "/") {
+			http.NotFound(w, r)
+			return
+		}
+
+		// Serve static files using the created handler
+		handler.ServeHTTP(w, r)
+	})
 }
