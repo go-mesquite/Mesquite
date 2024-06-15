@@ -58,3 +58,4 @@ Embrace DDD with the model layer?:
 - How should we deal with actions that could be optimized? Advocating for a bulk create instead of running a single create SQL statement over and over? (From the controller perspective)
 - Conventional wisdom says that business logic should not be in the database layer. But I think it makes sense in this case
 - Or use MVCD. Add a domain layer instead of a service layer. Models would just be CREATE TABLEs and migrations
+- Use https://blog.jetbrains.com/go/2021/06/09/how-to-use-go-embed-in-go-1-16/ to kep files in the binary?

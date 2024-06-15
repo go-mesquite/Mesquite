@@ -2,10 +2,10 @@ package mesquite
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"regexp"
-	"strings"
 )
 
 type RouteEntry struct {
@@ -101,16 +101,78 @@ func (rtr *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	http.NotFound(w, r)
 }
 
-// Get the URL variable
-func URLParam(r *http.Request, name string) string {
-	ctx := r.Context()
-	params := ctx.Value("params").(map[string]string)
-	return params[name]
+// Serve a single static file
+func (router *Router) StaticFile(filePath string, urlPath string) {
+	router.Route(http.MethodGet, urlPath, func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, filePath)
+	})
 }
 
-// TODO get this working
-
+// TODO come back and figure this out after setting up variables to replace regex
 // Serves static files from the specified directory.
+func (router *Router) StaticDirectory(directoryPath string, urlPath string) {
+	// Create a file server for the specified directory
+	fs := http.FileServer(http.Dir(directoryPath))
+
+	// Strip the urlPath prefix from the request URL before passing to FileServer
+	// This allows serving files relative to the given urlPath
+	router.Route(http.MethodGet, urlPath+`/{str:filePath}`, func(w http.ResponseWriter, r *http.Request) {
+		// Extract the filePath from the URL path parameter
+		filePath := URLParam(r, "filePath")
+		fmt.Println(filePath)
+
+		// Combine the directory and file path to get the full file path
+		//fullPath := path.Join(directoryPath, filePath)
+
+		// Check if the file exists and serve it using the file server
+		// If the file doesn't exist, FileServer will handle returning a 404
+		http.StripPrefix(urlPath, fs)
+		fs.ServeHTTP(w, r)
+	})
+}
+
+/*
+http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
+
+func (router *Router) Static(path string, handlerFunc http.HandlerFunc) {
+	router.Route(http.MethodGet, path, func(
+		// Handle staticfile match
+	))
+}
+
+func (router *Router) Static(prefix, directory string) {
+	// Ensure prefix ends with a slash
+	if !strings.HasSuffix(prefix, "/") {
+		prefix += "/"
+	}
+
+	// Register a route for serving static files
+	router.Route("GET", prefix+"*", func(
+		// StaticFileHandler returns an http.HandlerFunc that serves static files
+		// from the specified directory.
+		dir := http.Dir(directory)
+		fs := http.FileServer(dir)
+
+		return func(w http.ResponseWriter, r *http.Request) {
+			// Get the file path from the URL
+			filePath := path.Join(directory, r.URL.Path)
+
+			// Check if the file exists
+			_, err := os.Stat(filePath)
+			if os.IsNotExist(err) {
+				http.NotFound(w, r)
+				return
+			}
+
+			// Serve the file using the standard file server
+			fs.ServeHTTP(w, r)
+		}
+	))
+}
+
+
+
+
 func (rtr *Router) Static(dir string, prefix string) {
 	// Create a handler function to serve static files
 	handler := http.StripPrefix(prefix, http.FileServer(http.Dir(dir)))
@@ -130,3 +192,4 @@ func (rtr *Router) Static(dir string, prefix string) {
 		handler.ServeHTTP(w, r)
 	})
 }
+*/

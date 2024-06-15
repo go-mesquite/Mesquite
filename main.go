@@ -1,9 +1,11 @@
 package mesquite
 
+import "net/http"
+
 /*
-NOTE: Go templates do not support HTMX. Make your own template engine?
+NOTE: Go templates do not support HTMX. Make your own template engine? Or use templ
 Base it off of Jinja2 to attract Django/Flask developers?
-Also, integrate HTMX into the template extension (Like for )
+Also, integrate HTMX into the template extension
 
 .gohtmx or .ghtmx or .gthx or .gomx
 Make this auto-format too
@@ -16,3 +18,10 @@ Ok so I've been looking at the existing Go community some more and routers are p
 So what can I build to make development faster? I can build the database and a better template layer (Checkout templ to make sure this is a need first)
 
 */
+
+// Get the URL variable
+func URLParam(r *http.Request, name string) string {
+	ctx := r.Context()
+	params := ctx.Value("params").(map[string]string)
+	return params[name]
+}

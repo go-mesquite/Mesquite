@@ -6,10 +6,6 @@ import (
 	mesquite "github.com/go-mesquite/Mesquite"
 )
 
-func Hello(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello " + mesquite.URLParam(r, "Message")))
-}
-
 /*
 // --- ---- --- Middleware --- --- ---
 // Logger is a middleware handler that does request logging
@@ -54,23 +50,22 @@ func main() {
 	// There is a lot going on in the next line but it's simple if we break it down
 	// http.MethodGet is the method (like GET, POST, DELETE ect.)
 	// "/" is the URL that this route is attached to. Regex can be used here
-	// func... is just an inline function defining the route. This could be done separately
 	// http.ResponseWriter is the interface for constructing an HTTP response
 	// *http.Request is the pointer to data that represents an HTTP request received by the server
-	router.Route(http.MethodGet, "/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Root root root"))
-	})
 
-	// Use a shortcut to reference a function (I can't decide if I like this way)
+	router.GET(`/`, getRoot)
 	router.GET(`/hello/(?P<Message>\w+)`, Hello)
 
+	// Serve a single file. This works for static html pages
+	router.StaticFile("views/index.html", "/html")
+
 	// Serve static files from a folder
-	router.Static("staticfiles", "/static")
+	router.StaticDirectory("staticfiles", "/static")
 
 	// TODO Add later
 
 	//router.UseMiddleware(Func) (Figure out naming for different types of middleware needed)
-	//router.Templates("templates")
+	//router.Views("views")
 	//router.ControllerFor404(Handle404), 500
 
 	http.ListenAndServe(":8000", router)
