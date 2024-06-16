@@ -2,8 +2,6 @@ package main
 
 import (
 	"net/http"
-
-	mesquite "github.com/go-mesquite/Mesquite"
 )
 
 /*
@@ -12,9 +10,16 @@ import (
 */
 
 func getRoot(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello, World!"))
+	w.Write([]byte("Hello, roooooooooot"))
 }
 
-func Hello(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello " + mesquite.URLParam(r, "Message")))
+func hello(w http.ResponseWriter, r *http.Request) {
+	// Get a URL var
+	name := r.PathValue("name")
+	w.Write([]byte("Helloooooooooooooooooooo, " + name))
+	//w.Write([]byte("Hello " + mesquite.URLParam(r, "Message")))
+}
+
+func aRoute(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("This is a route"))
 }

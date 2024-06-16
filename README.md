@@ -28,14 +28,15 @@ Mesquite sits in the middle of these two frameworks in terms of supporting use c
 
 ## Design decisions
 ### Routing
-Mesquite has it's own basic router to reduce dependencies.
+Mesquite builds on the standard lib router.
+It does this so there is less boilerplate and go specific edge cases to learn.
 It is compatible with standard `net.http` so it can be swapped for others like `gorilla/mux`
 
 
 ## Roadmap
 - [x] Routing
 - [ ] Templates (Or should I call them views?)
-- [ ] Static files
+- [x] Static files
 - [ ] Config for running in dev, prod ect.
 - [ ] Reload on save
 - [ ] User input (Forms/CSRF)

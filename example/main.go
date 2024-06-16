@@ -52,21 +52,24 @@ func main() {
 	// "/" is the URL that this route is attached to. Regex can be used here
 	// http.ResponseWriter is the interface for constructing an HTTP response
 	// *http.Request is the pointer to data that represents an HTTP request received by the server
+	router.GET("/", getRoot)
+	router.GET("/hello/{name}", hello)
 
-	router.GET(`/`, getRoot)
-	router.GET(`/hello/(?P<Message>\w+)`, Hello)
-
-	// Serve a single file. This works for static html pages
-	router.StaticFile("views/index.html", "/html")
+	// Or use HandleFunc() directly
+	// Note the first peramiter is an optional HTTP verb
+	router.HandleFunc("", "/ok/{id}", aRoute)
 
 	// Serve static files from a folder
-	router.StaticDirectory("staticfiles", "/static")
+	router.Static("staticfiles", "/static")
 
 	// TODO Add later
 
 	//router.UseMiddleware(Func) (Figure out naming for different types of middleware needed)
-	//router.Views("views")
 	//router.ControllerFor404(Handle404), 500
+
+	// Add other routers
+	//apiRouter :=
+	//orgRouter :=
 
 	http.ListenAndServe(":8000", router)
 }

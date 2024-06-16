@@ -1,7 +1,5 @@
 package mesquite
 
-import "net/http"
-
 /*
 NOTE: Go templates do not support HTMX. Make your own template engine? Or use templ
 Base it off of Jinja2 to attract Django/Flask developers?
@@ -20,8 +18,3 @@ So what can I build to make development faster? I can build the database and a b
 */
 
 // Get the URL variable
-func URLParam(r *http.Request, name string) string {
-	ctx := r.Context()
-	params := ctx.Value("params").(map[string]string)
-	return params[name]
-}
