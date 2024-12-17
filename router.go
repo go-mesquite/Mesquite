@@ -1,7 +1,6 @@
 package mesquite
 
 import (
-	"fmt"
 	"net/http"
 )
 
@@ -63,13 +62,11 @@ func (router *Router) PATCH(path string, handle http.HandlerFunc) {
 func (router *Router) Static(directoryPath string, urlPath string) {
 	// Create a file server for the specified directory
 	fs := http.FileServer(http.Dir(directoryPath))
-	fmt.Println("Register ran")
 
 	// Strip the urlPath prefix from the request URL before passing to FileServer
 	// This allows serving files relative to the given urlPath
 	router.HandleFunc(http.MethodGet, urlPath+"/{filePath...}", func(w http.ResponseWriter, r *http.Request) {
 		// I'm just going to count the root directory list from this as a feature..
-		fmt.Println("Handle ran")
 		http.StripPrefix(urlPath, fs).ServeHTTP(w, r)
 	})
 }
